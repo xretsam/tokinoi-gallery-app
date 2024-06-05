@@ -22,7 +22,8 @@ public class GalleryController {
         return gallery.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
     @GetMapping("/search")
-    public List<Gallery> searchGallery(@RequestParam String title) {
+    public List<Gallery> searchGallery(@RequestParam(name = "name") String title) {
+        System.out.println(title);
         return galleryService.searchGalleriesByTitle(title);
     }
 }

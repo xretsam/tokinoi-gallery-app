@@ -11,7 +11,7 @@ import ru.meinone.tokinoi_gallery_app.service.UserService;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public User getUser(@PathVariable int id) {
         return userService.getUserById(id);
     }
