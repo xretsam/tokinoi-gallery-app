@@ -16,3 +16,5 @@ spring:
   sql:
     init:
       mode: never
+file:
+  upload-path: uploads/images
