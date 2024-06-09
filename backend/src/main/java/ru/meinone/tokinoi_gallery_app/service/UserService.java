@@ -12,8 +12,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    public Optional<UserDTO> getUserById(int id) {
-        return userRepository.findById(id).map(UserDTO::new);
+    public Optional<User> getUserById(int id) {
+        return userRepository.findById(id);
     }
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -22,7 +22,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<UserDTO> getUserByUsername(String username) {
-        return userRepository.findByUsername(username).map(UserDTO::new);
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

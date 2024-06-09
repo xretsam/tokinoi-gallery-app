@@ -1,10 +1,9 @@
 package ru.meinone.tokinoi_gallery_app.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import ru.meinone.tokinoi_gallery_app.enums.Role;
+import ru.meinone.tokinoi_gallery_app.enums.UserStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name="users")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -34,10 +34,12 @@ public class User {
     private String profilePicture;
 
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Column(name = "created_at")
     private Date createdAt;
@@ -55,4 +57,6 @@ public class User {
     private List<Subscription> subscriptions;
     @OneToMany(mappedBy = "targetUser")
     private List<Subscription> subscribers;
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 }

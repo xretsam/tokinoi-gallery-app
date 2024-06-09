@@ -9,12 +9,14 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: 'true'
     hibernate:
       ddl-auto: update
   sql:
     init:
       mode: never
+  jwt:
+    secret: HfTKhE+O5VPLbbQX/sTH1r/ZIC/duRxXk3hiCmrfdqOzXB5L+FLluZOKzAT5LPS9ku8naeiA3Xze+BuTphJFfg==
+    expiration-time: 86400000
 file:
   upload-path: uploads/images

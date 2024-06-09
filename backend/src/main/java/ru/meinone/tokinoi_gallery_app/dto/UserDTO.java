@@ -28,8 +28,8 @@ public class UserDTO {
         this.profilePicture = user.getProfilePicture();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
-        this.role = user.getRole();
-        this.status = user.getStatus();
+        this.role = user.getRole().name();
+        this.status = user.getStatus().name();
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
         subscribersCount = user.getSubscribers().size();

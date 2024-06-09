@@ -17,12 +17,14 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable int id) {
         return userService.getUserById(id)
+                .map(UserDTO::new)
                 .map(userDTO -> new ResponseEntity<>(userDTO, HttpStatus.OK))
                 .orElse(ResponseEntity.notFound().build());
     }
     @GetMapping
     public ResponseEntity<UserDTO> getUserByUsername(@RequestParam String username) {
         return userService.getUserByUsername(username)
+                .map(UserDTO::new)
                 .map(userDTO -> new ResponseEntity<>(userDTO, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null,HttpStatus.NOT_FOUND));
     }
