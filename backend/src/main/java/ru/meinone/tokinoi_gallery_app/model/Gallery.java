@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.meinone.tokinoi_gallery_app.enums.GalleryStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Gallery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     @Column(name = "title")
     private String title;
     @Column(name = "description")
@@ -27,7 +28,8 @@ public class Gallery {
     @Column(name = "updated_at")
     private Date updatedAt;
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private GalleryStatus status;
     @Column(name = "thumbnail")
     private String thumbnail;
     @OneToMany(mappedBy = "gallery")

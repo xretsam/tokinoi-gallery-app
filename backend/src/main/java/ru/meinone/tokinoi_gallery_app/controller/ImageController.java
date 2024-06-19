@@ -1,5 +1,6 @@
 package ru.meinone.tokinoi_gallery_app.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -31,8 +32,25 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save image");
         }
     }
-    @GetMapping("/{imageUrl:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable("imageUrl") String imageUrl) {
+
+    //    @GetMapping("/{imageUrl:.+}")
+//    public ResponseEntity<Resource> getImage(@PathVariable("imageUrl") String imageUrl) {
+//        try {
+//            Resource resource = imageService.getImage(imageUrl);
+//            String contentType = imageService.getContentType(imageUrl);
+//            return ResponseEntity.ok()
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+//                    .header(HttpHeaders.CONTENT_TYPE, contentType)
+//                    .body(resource);
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
+    @GetMapping("/**")
+    public ResponseEntity<Resource> getImage(HttpServletRequest request) {
+        String requestUrl = request.getRequestURI();
+        String imageUrl = requestUrl.substring("/api/image/uploads/".length());
+        System.out.println(imageUrl);
         try {
             Resource resource = imageService.getImage(imageUrl);
             String contentType = imageService.getContentType(imageUrl);

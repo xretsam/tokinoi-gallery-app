@@ -27,7 +27,7 @@ CREATE TABLE gallery (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50),
-    thumbnail varchar(255) NOT NULL,
+    thumbnail varchar(255),
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     category_id INT REFERENCES category(id) ON DELETE SET NULL
 );

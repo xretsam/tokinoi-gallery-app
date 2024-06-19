@@ -4,7 +4,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    url: jdbc:postgresql://localhost:5433/tokinoidb
+    url: jdbc:postgresql://localhost:5432/tokinoidb
     password: 123456db
   jpa:
     properties:
@@ -19,4 +19,4 @@ spring:
     secret: HfTKhE+O5VPLbbQX/sTH1r/ZIC/duRxXk3hiCmrfdqOzXB5L+FLluZOKzAT5LPS9ku8naeiA3Xze+BuTphJFfg==
     expiration-time: 86400000
 file:
-  upload-path: uploads/images
+  upload-path: uploads
