@@ -9,5 +9,4 @@ public class TokinoiGalleryAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TokinoiGalleryAppApplication.class, args);
 	}
-
 }
