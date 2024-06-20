@@ -3,9 +3,9 @@ spring:
     name: tokinoi-gallery-app
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    url: jdbc:postgresql://localhost:5432/tokinoidb
-    password: 123456db
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     properties:
       hibernate:
