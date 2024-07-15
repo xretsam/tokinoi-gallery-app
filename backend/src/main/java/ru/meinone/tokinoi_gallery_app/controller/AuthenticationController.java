@@ -16,6 +16,7 @@ import ru.meinone.tokinoi_gallery_app.model.Token;
 import ru.meinone.tokinoi_gallery_app.model.User;
 import ru.meinone.tokinoi_gallery_app.enums.Role;
 import ru.meinone.tokinoi_gallery_app.security.UserDetailsImpl;
+import ru.meinone.tokinoi_gallery_app.service.AuthenticationService;
 import ru.meinone.tokinoi_gallery_app.service.TokenService;
 import ru.meinone.tokinoi_gallery_app.service.UserService;
 
@@ -32,47 +33,23 @@ public class AuthenticationController {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
+    private final AuthenticationService authenticationService;
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDTO registerRequest) {
-        if (userService.getUserByEmail(registerRequest.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("User with this email already exists");
-        } else if (userService.getUserByUsername(registerRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("User with this username already exists");
-        }
-        Date createdAt = new Date();
-        User newUser = User.builder()
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .createdAt(createdAt)
-                .updatedAt(createdAt)
-                .role(Role.USER)
-                .status(UserStatus.ACTIVE)
-                .build();
-        userService.save(newUser);
-        Token jwt = tokenService.createToken(newUser);
-        return ResponseEntity.ok(Map.of("jwt", jwt.getToken()));
+        String token = authenticationService.register(registerRequest.getUsername(),registerRequest.getEmail(),registerRequest.getPassword());
+        return ResponseEntity.ok().body(token);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
-        Authentication authenticationRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername(), loginRequest.getPassword());
-        this.authenticationManager.authenticate(authenticationRequest);
-        Optional<User> user = userService.getUserByUsername(loginRequest.getUsername());
-        if (user.isPresent()) {
-            Token jwt = tokenService.createToken(user.get());
-            return ResponseEntity.ok(Map.of("jwt", jwt.getToken()));
-        }
-        return ResponseEntity.badRequest().body("Invalid username or password");
+        String token = authenticationService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        return ResponseEntity.ok().body(token);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        UserDetailsImpl userDetails = (UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        userDetails.getUsername();
-        userService.getUserByUsername(userDetails.getUsername()).ifPresent(tokenService::revokeTokens);
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Successfully logged out");
+    public ResponseEntity<?> logout(String token) {
+        authenticationService.logout(token);
+        return ResponseEntity.ok("logged out");
     }
 }

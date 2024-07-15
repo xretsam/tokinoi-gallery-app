@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.meinone.tokinoi_gallery_app.enums.UserStatus;
 import ru.meinone.tokinoi_gallery_app.model.User;
 
 import java.util.Collection;
@@ -33,5 +34,9 @@ public class UserDetailsImpl implements UserDetails {
                 .stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.toString()))
                 .collect(Collectors.toList());
+    }
+    @Override
+    public boolean isAccountNonLocked(){
+        return !user.getStatus().equals(UserStatus.BANNED);
     }
 }

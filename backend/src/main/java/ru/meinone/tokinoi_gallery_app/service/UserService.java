@@ -16,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final TokenService tokenService;
     private final AuthorizationService authorizationService;
     public Optional<User> getUserById(int id) {
         return userRepository.findById(id);
@@ -43,6 +44,7 @@ public class UserService {
     public void banUser(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         user.setStatus(UserStatus.BANNED);
+        tokenService.revokeTokens(user);
         userRepository.save(user);
     }
     @PreAuthorize("hasAuthority('unban')")

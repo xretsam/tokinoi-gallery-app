@@ -45,9 +45,9 @@ public class TokenService {
                     tokenRepository.save(token);
                 });
     }
-    public void revokeToken(Token token) {
+    public void revokeToken(String token) {
         tokenRepository
-                .findByToken(token.getToken()).ifPresent(token1 -> token1.setRevoked(true));
+                .findByToken(token).ifPresent(token1 -> token1.setRevoked(true));
     }
 
     public boolean isTokenValid(String token, TokenType type) {

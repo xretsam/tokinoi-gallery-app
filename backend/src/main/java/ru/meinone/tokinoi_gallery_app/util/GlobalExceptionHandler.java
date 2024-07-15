@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.meinone.tokinoi_gallery_app.util.exception.AuthenticationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,5 +30,12 @@ public class GlobalExceptionHandler {
         Map<String, String> message = new HashMap<>();
         message.put("message", ex.getMessage());
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, String>> handleAuthenticationExceptions(AuthenticationException ex) {
+        System.out.println("HI");
+        Map<String, String> message = new HashMap<>();
+        message.put("message", ex.getMessage());
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 }
