@@ -2,6 +2,7 @@ package ru.meinone.tokinoi_gallery_app.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ public class GalleryService {
     private final GalleryRepository galleryRepository;
     private final FileStorageService fileStorageService;
     private final CategoryRepository categoryRepository;
+    private final AuthorizationService authorizationService;
     public List<GalleryResponseDTO> searchGalleriesByTitle(String title) {
         List<Gallery> galleries = galleryRepository.findByTitleContainingIgnoreCase(title);
         System.out.println(galleries.get(0).getAuthor().getUsername());
@@ -89,5 +91,27 @@ public class GalleryService {
             return tag.get();
         }
         return null;
+    }
+
+    @PreAuthorize("!authentication.name.equals('anonymousUser')")
+    public void publishGallery(Integer id) {
+        Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
+        authorizationService.checkGalleryOwnership(gallery);
+        gallery.setStatus(GalleryStatus.ACTIVE);
+        galleryRepository.save(gallery);
+    }
+    @PreAuthorize("!authentication.name.equals('anonymousUser')")
+    public void privatizeGallery(Integer id) {
+        Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
+        authorizationService.checkGalleryOwnership(gallery);
+        gallery.setStatus(GalleryStatus.PRIVATE);
+        galleryRepository.save(gallery);
+    }
+    @PreAuthorize("!authentication.name.equals('anonymousUser')")
+    public void deleteGallery(Integer id) {
+        Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
+        authorizationService.checkGalleryOwnership(gallery);
+        gallery.setStatus(GalleryStatus.DELETED);
+        galleryRepository.save(gallery);
     }
 }

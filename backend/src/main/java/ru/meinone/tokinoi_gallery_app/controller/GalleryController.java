@@ -32,15 +32,18 @@ public class GalleryController {
                 .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
+
     @GetMapping("/search")
     public List<GalleryResponseDTO> searchGallery(@RequestParam(name = "name") String title) {
         return galleryService.searchGalleriesByTitle(title);
     }
+
     @PostMapping
     public ResponseEntity<?> createGallery() {
         Integer id = galleryService.saveGallery(new Gallery());
         return ResponseEntity.ok(Collections.singletonMap("galleryId", id));
     }
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateGallery(@ModelAttribute @Validated GalleryRequestDTO requestDTO,
                                            BindingResult bindingResult,
@@ -55,4 +58,23 @@ public class GalleryController {
         }
         return ResponseEntity.ok("Gallery updated");
     }
+
+    @PostMapping("/{id}/publish")
+    public ResponseEntity<?> publishGallery(@PathVariable Integer id) {
+        galleryService.publishGallery(id);
+        return ResponseEntity.ok("Gallery published");
+    }
+
+    @PostMapping("/{id}/privatize")
+    public ResponseEntity<?> privatizeGallery(@PathVariable Integer id) {
+        galleryService.privatizeGallery(id);
+        return ResponseEntity.ok("Gallery is private");
+    }
+
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<?> deleteGallery(@PathVariable Integer id) {
+        galleryService.deleteGallery(id);
+        return ResponseEntity.ok("Gallery deleted");
+    }
+
 }
