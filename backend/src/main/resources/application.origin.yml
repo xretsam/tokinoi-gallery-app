@@ -3,9 +3,9 @@ spring:
     name: tokinoi-gallery-app
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/tokinoidb}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:123456db}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
   jpa:
     properties:
       hibernate:
@@ -16,7 +16,7 @@ spring:
     init:
       mode: never
   jwt:
-    secret: HfTKhE+O5VPLbbQX/sTH1r/ZIC/duRxXk3hiCmrfdqOzXB5L+FLluZOKzAT5LPS9ku8naeiA3Xze+BuTphJFfg==
+    secret: jwt-secret
     expiration-time: 86400000
 file:
   upload-path: uploads
