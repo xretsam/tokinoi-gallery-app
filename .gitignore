@@ -33,3 +33,5 @@ build/
 .vscode/
 ### uploads ###
 uploads/**
+### application configuration ###
+/backend/src/main/resources/application.yml
