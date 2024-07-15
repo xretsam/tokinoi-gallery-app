@@ -14,7 +14,6 @@ import ru.meinone.tokinoi_gallery_app.dto.RegisterRequestDTO;
 import ru.meinone.tokinoi_gallery_app.enums.UserStatus;
 import ru.meinone.tokinoi_gallery_app.model.Token;
 import ru.meinone.tokinoi_gallery_app.model.User;
-import ru.meinone.tokinoi_gallery_app.security.JwtTokenProvider;
 import ru.meinone.tokinoi_gallery_app.enums.Role;
 import ru.meinone.tokinoi_gallery_app.security.UserDetailsImpl;
 import ru.meinone.tokinoi_gallery_app.service.TokenService;
@@ -27,7 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
