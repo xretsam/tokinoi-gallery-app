@@ -8,7 +8,9 @@ public enum Authority {
     PUBLISH_GALLERY("publish_gallery"),
     BAN("ban"),
     UNBAN("unban"),
-    CHANGE_ROLE("change_role");
+    CHANGE_ROLE("change_role"),
+    READ_ALL("read_all"),
+    DELETE_ALL("delete_all");
     private final String authority;
     Authority(String authority) {
         this.authority = authority;

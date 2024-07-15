@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public enum Role {
     USER(Set.of(Authority.COMMENT, Authority.PUBLISH_GALLERY)),
     MODERATOR(Stream.concat(USER.getAuthorities().stream(),
-                            Stream.of(Authority.BAN, Authority.UNBAN))
+                    Stream.of(Authority.BAN, Authority.UNBAN, Authority.READ_ALL, Authority.DELETE_ALL))
                     .collect(Collectors.toSet())),
     ADMIN(Stream.concat(MODERATOR.getAuthorities().stream(),
                         Stream.of(Authority.CHANGE_ROLE))
