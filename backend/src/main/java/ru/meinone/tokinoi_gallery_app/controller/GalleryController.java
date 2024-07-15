@@ -29,13 +29,14 @@ public class GalleryController {
     @GetMapping("/{id}")
     public ResponseEntity<GalleryResponseDTO> getGallery(@PathVariable int id) {
         return galleryService.searchGalleryById(id)
+                .map(GalleryResponseDTO::new)
                 .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/search")
     public List<GalleryResponseDTO> searchGallery(@RequestParam(name = "name") String title) {
-        return galleryService.searchGalleriesByTitle(title);
+        return galleryService.searchGalleriesByTitle(title).stream().map(GalleryResponseDTO::new).toList();
     }
 
     @PostMapping

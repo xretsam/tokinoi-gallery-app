@@ -2,6 +2,7 @@ package ru.meinone.tokinoi_gallery_app.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,15 +31,21 @@ public class GalleryService {
     private final FileStorageService fileStorageService;
     private final CategoryRepository categoryRepository;
     private final AuthorizationService authorizationService;
-    public List<GalleryResponseDTO> searchGalleriesByTitle(String title) {
+    public List<Gallery> searchGalleriesByTitle(String title) {
         List<Gallery> galleries = galleryRepository.findByTitleContainingIgnoreCase(title);
         System.out.println(galleries.get(0).getAuthor().getUsername());
-        return galleries.stream().map(GalleryResponseDTO::new).toList();
+        galleries.removeIf(gallery -> !gallery.getStatus().equals(GalleryStatus.ACTIVE));
+        return galleries;
     }
-    public Optional<GalleryResponseDTO> searchGalleryById(int id) {
-        return galleryRepository.findById(id).map(GalleryResponseDTO::new);
+    @PostAuthorize("(returnObject.get().author.username.equals(authentication.name) " +
+            "|| hasAuthority('read_all'))" +
+            "&& !returnObject.get().status.toString().equals('ACTIVE')" +
+            "|| returnObject.get().status.toString().equals('ACTIVE')")
+    public Optional<Gallery> searchGalleryById(int id) {
+        Optional<Gallery> gallery = galleryRepository.findById(id);
+        return gallery;
     }
-//    public List<GalleryResponseDTO> searchGalleriesByAuthor(String author) {}
+    @PreAuthorize("!authentication.name.equals('anonymousUser')")
     public Integer saveGallery(Gallery gallery) {
         Date now = new Date();
         gallery.setTitle(now.toString());
