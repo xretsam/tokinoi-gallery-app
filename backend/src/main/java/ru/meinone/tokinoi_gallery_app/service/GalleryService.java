@@ -31,12 +31,14 @@ public class GalleryService {
     private final FileStorageService fileStorageService;
     private final CategoryRepository categoryRepository;
     private final AuthorizationService authorizationService;
+
     public List<Gallery> searchGalleriesByTitle(String title) {
         List<Gallery> galleries = galleryRepository.findByTitleContainingIgnoreCase(title);
         System.out.println(galleries.get(0).getAuthor().getUsername());
         galleries.removeIf(gallery -> !gallery.getStatus().equals(GalleryStatus.ACTIVE));
         return galleries;
     }
+
     @PostAuthorize("(returnObject.get().author.username.equals(authentication.name) " +
             "|| hasAuthority('read_all'))" +
             "&& !returnObject.get().status.toString().equals('ACTIVE')" +
@@ -45,6 +47,7 @@ public class GalleryService {
         Optional<Gallery> gallery = galleryRepository.findById(id);
         return gallery;
     }
+
     @PreAuthorize("!authentication.name.equals('anonymousUser')")
     public Integer saveGallery(Gallery gallery) {
         Date now = new Date();
@@ -56,6 +59,7 @@ public class GalleryService {
         return galleryRepository.save(gallery).getId();
     }
 
+    @PreAuthorize("!authentication.name.equals('anonymousUser')")
     public void updateGallery(Integer id, GalleryRequestDTO updateDTO) throws IOException {
         Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
 
@@ -77,9 +81,11 @@ public class GalleryService {
 
         galleryRepository.save(gallery);
     }
+
     private void saveThumbnail(Gallery gallery, MultipartFile thumbnail) throws IOException {
         gallery.setThumbnail(fileStorageService.createFile(thumbnail, "gallery", "thumbnail", gallery.getId().toString()));
     }
+
     private void setCategory(Gallery gallery, String category) {
         if (categoryRepository.findByCategory(category).isPresent()) {
             gallery.setCategory(categoryRepository.findByCategory(category).get());
@@ -107,6 +113,7 @@ public class GalleryService {
         gallery.setStatus(GalleryStatus.ACTIVE);
         galleryRepository.save(gallery);
     }
+
     @PreAuthorize("!authentication.name.equals('anonymousUser')")
     public void privatizeGallery(Integer id) {
         Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
@@ -114,6 +121,7 @@ public class GalleryService {
         gallery.setStatus(GalleryStatus.PRIVATE);
         galleryRepository.save(gallery);
     }
+
     @PreAuthorize("!authentication.name.equals('anonymousUser')")
     public void deleteGallery(Integer id) {
         Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
