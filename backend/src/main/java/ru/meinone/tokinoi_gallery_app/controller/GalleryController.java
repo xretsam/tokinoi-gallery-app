@@ -50,7 +50,7 @@ public class GalleryController {
                                            BindingResult bindingResult,
                                            @PathVariable Integer id) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().stream().map(objectError -> "Error: " + objectError.getDefaultMessage()).toList());
         }
         try {
             galleryService.updateGallery(id, requestDTO);
