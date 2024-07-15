@@ -3,22 +3,17 @@ package ru.meinone.tokinoi_gallery_app.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ru.meinone.tokinoi_gallery_app.dto.GalleryRequestDTO;
+import ru.meinone.tokinoi_gallery_app.dto.GalleryEditRequestDTO;
 import ru.meinone.tokinoi_gallery_app.dto.GalleryResponseDTO;
 import ru.meinone.tokinoi_gallery_app.model.Gallery;
-import ru.meinone.tokinoi_gallery_app.model.User;
-import ru.meinone.tokinoi_gallery_app.security.UserDetailsImpl;
 import ru.meinone.tokinoi_gallery_app.service.GalleryService;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gallery")
@@ -46,7 +41,7 @@ public class GalleryController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateGallery(@ModelAttribute @Validated GalleryRequestDTO requestDTO,
+    public ResponseEntity<?> updateGallery(@ModelAttribute @Validated GalleryEditRequestDTO requestDTO,
                                            BindingResult bindingResult,
                                            @PathVariable Integer id) {
         if (bindingResult.hasErrors()) {

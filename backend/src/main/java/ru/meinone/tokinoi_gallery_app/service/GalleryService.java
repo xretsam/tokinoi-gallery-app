@@ -7,8 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.meinone.tokinoi_gallery_app.dto.GalleryRequestDTO;
-import ru.meinone.tokinoi_gallery_app.dto.GalleryResponseDTO;
+import ru.meinone.tokinoi_gallery_app.dto.GalleryEditRequestDTO;
 import ru.meinone.tokinoi_gallery_app.enums.GalleryStatus;
 import ru.meinone.tokinoi_gallery_app.model.Gallery;
 import ru.meinone.tokinoi_gallery_app.model.Tag;
@@ -60,7 +59,7 @@ public class GalleryService {
     }
 
     @PreAuthorize("!authentication.name.equals('anonymousUser')")
-    public void updateGallery(Integer id, GalleryRequestDTO updateDTO) throws IOException {
+    public void updateGallery(Integer id, GalleryEditRequestDTO updateDTO) throws IOException {
         Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Gallery not found"));
 
         if (updateDTO.getThumbnail() != null) {
