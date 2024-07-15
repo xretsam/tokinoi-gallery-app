@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +46,9 @@ public class ImageController {
         String imageUrl = requestUrl.substring("/api/image/uploads/".length());
         System.out.println(imageUrl);
         try {
-            Resource resource = imageService.getImage(imageUrl);
-            String contentType = imageService.getContentType(imageUrl);
+            Pair<Resource, String> resourceAndContentType = imageService.getImage(imageUrl);
+            Resource resource = resourceAndContentType.getFirst();
+            String contentType = resourceAndContentType.getSecond();
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                     .header(HttpHeaders.CONTENT_TYPE, contentType)

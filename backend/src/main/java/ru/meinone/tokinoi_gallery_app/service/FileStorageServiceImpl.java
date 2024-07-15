@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ import java.nio.file.Paths;
 
 
 @Service
-public class FileSystemServiceImpl implements FileSystemService {
+public class FileStorageServiceImpl implements FileStorageService {
     @Value("${file.upload-path}")
     private String uploadDir;
     @PostConstruct
@@ -42,14 +43,14 @@ public class FileSystemServiceImpl implements FileSystemService {
     }
 
     @Override
-    public Resource readFile(String fileUrl) throws IOException {
+    public Pair<Resource, String> readFile(String fileUrl) throws IOException {
         System.out.println(fileUrl);
         Path fullPath = Paths.get(uploadDir, fileUrl).normalize();
         System.out.println(fullPath.toString());
         Resource resource = new UrlResource(fullPath.toUri());
         System.out.println(resource.getURI());
         if (resource.exists() && resource.isReadable()) {
-            return resource;
+            return Pair.of(resource, getContentType(fileUrl));
         } else {
             throw new IOException("Could not read file: " + fileUrl);
         }
