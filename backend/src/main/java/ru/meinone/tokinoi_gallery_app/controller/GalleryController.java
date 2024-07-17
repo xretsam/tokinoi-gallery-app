@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.meinone.tokinoi_gallery_app.dto.GalleryEditRequestDTO;
 import ru.meinone.tokinoi_gallery_app.dto.GalleryResponseDTO;
+import ru.meinone.tokinoi_gallery_app.dto.GallerySearchDTO;
 import ru.meinone.tokinoi_gallery_app.model.Gallery;
 import ru.meinone.tokinoi_gallery_app.service.GalleryService;
 
@@ -30,8 +31,12 @@ public class GalleryController {
     }
 
     @GetMapping("/search")
-    public List<GalleryResponseDTO> searchGallery(@RequestParam(name = "name") String title) {
-        return galleryService.searchGalleriesByTitle(title).stream().map(GalleryResponseDTO::new).toList();
+    public ResponseEntity<?> searchGallery(@ModelAttribute GallerySearchDTO searchRequest) {
+        List<Gallery> result = galleryService.searchGalleriesByTitle(searchRequest.getTitle());
+        if(result.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(result.stream().map(GalleryResponseDTO::new).toList());
     }
 
     @PostMapping

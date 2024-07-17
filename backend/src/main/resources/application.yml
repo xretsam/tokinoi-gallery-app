@@ -16,7 +16,18 @@ spring:
     init:
       mode: never
   jwt:
-    secret: jwt-secret
-    expiration-time: 86400000
+    secret: ${JWT_SECRET}
+    expiration-time: ${JWT_EXPIRATION_TIME:86400000}
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL}
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+  ssl:
+    bundle:
+      pem:
+        elasticsearch:
+          truststore:
+            certificate: ${ELASTICSEARCH_CERTIFICATE}
+
 file:
   upload-path: uploads

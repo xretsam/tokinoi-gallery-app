@@ -33,7 +33,6 @@ public class GalleryService {
 
     public List<Gallery> searchGalleriesByTitle(String title) {
         List<Gallery> galleries = galleryRepository.findByTitleContainingIgnoreCase(title);
-        System.out.println(galleries.get(0).getAuthor().getUsername());
         galleries.removeIf(gallery -> !gallery.getStatus().equals(GalleryStatus.ACTIVE));
         return galleries;
     }

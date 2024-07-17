@@ -34,4 +34,6 @@ build/
 ### uploads ###
 uploads/**
 ### application configuration ###
-/backend/src/main/resources/application.yml
+*.env
+### certificates ###
+*.crt
