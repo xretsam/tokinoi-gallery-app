@@ -16,6 +16,6 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/target/tokinoi-gallery-app-0.0.1-SNAPSHOT.jar ./tokinoi-gallery-app-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/tokinoi-galleryDoc-app-0.0.1-SNAPSHOT.jar ./tokinoi-galleryDoc-app-0.0.1-SNAPSHOT.jar
 
-ENTRYPOINT ["java", "-jar", "tokinoi-gallery-app-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "tokinoi-galleryDoc-app-0.0.1-SNAPSHOT.jar"]

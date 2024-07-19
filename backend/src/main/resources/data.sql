@@ -10,7 +10,7 @@ INSERT INTO users (username, password, email, phone_number, profile_picture, rol
 ('frank_red', 'frankPass606', 'frank.red@example.com', '901-234-5678', 'frank_profile.jpg', 'USER', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('grace_blue', 'gracePass707', 'grace.blue@example.com', '012-345-6789', 'grace_profile.jpg', 'USER', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO gallery (title, description, created_at, updated_at, status, thumbnail, user_id, category_id) VALUES
+INSERT INTO galleryDoc (title, description, created_at, updated_at, status, thumbnail, user_id, category_id) VALUES
 ('Sunset Over the Mountains', 'A beautiful sunset captured over the mountains.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'sunset_thumbnail.jpg', 1, NULL),
 ('City Lights', 'The city comes alive with lights at night.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'city_lights_thumbnail.jpg', 1, NULL),
 ('Forest Adventure', 'Exploring the dense forest and its hidden treasures.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE', 'forest_adventure_thumbnail.jpg', 1, NULL),

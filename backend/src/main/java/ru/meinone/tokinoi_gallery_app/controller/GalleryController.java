@@ -31,10 +31,13 @@ public class GalleryController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchGallery(@ModelAttribute GallerySearchDTO searchRequest) {
-        List<Gallery> result = galleryService.searchGalleriesByTitle(searchRequest.getTitle());
-        if(result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<?> searchGallery(@RequestBody GallerySearchDTO searchRequest) {
+        System.out.println("title: " + searchRequest.getTitle() + "page: " + searchRequest.getPage() + "page: " + searchRequest.getPageSize());
+//        List<Gallery> result = galleryService.searchGalleriesByTitle(searchRequest.getTitle(), searchRequest.getPage(), searchRequest.getPageSize());
+        List<Gallery> result = galleryService.searchGalleries(searchRequest.getTitle(), searchRequest.getAuthor(), searchRequest.getTags(), searchRequest.getPage(), searchRequest.getPageSize());
+
+        if (result.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No galleries found");
         }
         return ResponseEntity.ok(result.stream().map(GalleryResponseDTO::new).toList());
     }
@@ -46,7 +49,7 @@ public class GalleryController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateGallery(@ModelAttribute @Validated GalleryEditRequestDTO requestDTO,
+    public ResponseEntity<?> updateGallery(@RequestBody @Validated GalleryEditRequestDTO requestDTO,
                                            BindingResult bindingResult,
                                            @PathVariable Integer id) {
         if (bindingResult.hasErrors()) {
