@@ -1,0 +1,97 @@
+services:
+  backend:
+    env_file:
+      - .env
+    networks:
+      - elastic
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - ELASTICSEARCH_CERTIFICATE=${ELASTICSEARCH_CERTIFICATE}
+    depends_on:
+      es:
+        condition: service_healthy
+      db:
+        condition: service_started
+    volumes:
+      - es_certs:/app/config/certs
+  db:
+    env_file:
+      - .env
+    networks:
+      - elastic
+    image: postgres:16.3-alpine3.20
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_api:/var/lib/postgresql/data
+  es-init:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    command: >
+      bash -c "
+        if [ ! -f /usr/share/elasticsearch/config/certs/http_ca.crt ]; then
+          echo 'creating certificates';
+          elasticsearch-certutil ca --out /usr/share/elasticsearch/config/certs/elastic-stack-ca.p12 --pass '';
+          elasticsearch-certutil cert --name es-node --dns es --ca /usr/share/elasticsearch/config/certs/elastic-stack-ca.p12 --ca-pass '' --out /usr/share/elasticsearch/config/certs/elastic-certificates.p12 --pass '';
+          openssl pkcs12 -in /usr/share/elasticsearch/config/certs/elastic-certificates.p12 -out /usr/share/elasticsearch/config/certs/elastic-certificates.pem -clcerts -nokeys -passin pass:'';
+          openssl pkcs12 -in /usr/share/elasticsearch/config/certs/elastic-certificates.p12 -out /usr/share/elasticsearch/config/certs/elastic-certificates.key -nocerts -nodes -passin pass:'';
+          chmod 600 /usr/share/elasticsearch/config/certs/elastic-certificates.key;
+          chmod 644 /usr/share/elasticsearch/config/certs/elastic-certificates.pem;
+          chmod 644 /usr/share/elasticsearch/config/certs/elastic-certificates.p12;
+          cp /usr/share/elasticsearch/config/certs/elastic-certificates.pem /usr/share/elasticsearch/config/certs/http_ca.crt;
+        fi
+      "
+    user: "0"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+      - es_certs:/usr/share/elasticsearch/config/certs
+    restart: "no"
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    depends_on:
+      - es-init
+    ports:
+      - "9200:9200"
+    env_file:
+      - .env
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.keystore.path=/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+      - xpack.security.transport.ssl.truststore.path=/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.keystore.path=/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+      - xpack.security.http.ssl.truststore.path=/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+    networks:
+      - elastic
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+      - es_certs:/usr/share/elasticsearch/config/certs
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -u elastic:${ELASTICSEARCH_PASSWORD} -k https://localhost:9200 | grep 'You Know, for Search'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+volumes:
+  es_data:
+  es_certs:
+  postgres_api:
+networks:
+  elastic:

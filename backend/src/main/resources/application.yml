@@ -28,6 +28,5 @@ spring:
         elasticsearch:
           truststore:
             certificate: ${ELASTICSEARCH_CERTIFICATE}
-
 file:
   upload-path: uploads

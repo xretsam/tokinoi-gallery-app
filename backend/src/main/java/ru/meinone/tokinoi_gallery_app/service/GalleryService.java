@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
@@ -81,16 +82,21 @@ public class GalleryService {
                 )
                 .withPageable(pageable)
                 .build();
-
-        return  elasticsearchOperations.search(nquery, GalleryDoc.class, IndexCoordinates.of("gallery_index")).stream()
-                .map(searchHit -> {
-                    System.out.println(searchHit.getScore() + " " + searchHit.getContent());
-                   return searchHit.getContent();
-                })
-                .map(galleryDoc -> galleryRepository.findById(galleryDoc.getGalleryId()))
-                .filter(gallery -> gallery.isPresent())
-                .map(gallery -> gallery.get())
+        List<Integer> galleryIds = elasticsearchOperations
+                .search(nquery, GalleryDoc.class, IndexCoordinates.of("gallery_index")).stream()
+                .map(searchHit -> searchHit.getContent().getGalleryId())
                 .toList();
+        return galleryRepository.findAllById(galleryIds);
+
+//        return  elasticsearchOperations.search(nquery, GalleryDoc.class, IndexCoordinates.of("gallery_index")).stream()
+//                .map(searchHit -> {
+//                    System.out.println(searchHit.getScore() + " " + searchHit.getContent());
+//                   return searchHit.getContent();
+//                })
+//                .map(galleryDoc -> galleryRepository.findById(galleryDoc.getGalleryId()))
+//                .filter(gallery -> gallery.isPresent())
+//                .map(gallery -> gallery.get())
+//                .toList();
     }
 
     private List<Gallery> getGalleriesFromPage(Page<GalleryDoc> galleryPage) {

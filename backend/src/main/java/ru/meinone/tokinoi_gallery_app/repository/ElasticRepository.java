@@ -13,11 +13,10 @@ import java.util.List;
 
 
 @Repository
-public interface ElasticRepository extends ElasticsearchRepository<GalleryDoc,Long> {
+public interface ElasticRepository extends ElasticsearchRepository<GalleryDoc, Long> {
     SearchHits<GalleryDoc> findByTitle(String title);
-    Page<GalleryDoc> findByTitle(String title, Pageable pageable);
+
     Page<GalleryDoc> findByTitleAndStatus(String title, String status, Pageable pageable);
-    @Query("{\"bool\": {\"must\": [{\"match\": {\"title\": \"?0\"}}, {\"term\": {\"author\": \"?1\"}}, {\"term\": {\"status\": \"?3\"}}, {\"terms\": {\"tags\": \"?2\"}}]}}")
-    Page<GalleryDoc> findByTitleAndAuthorAndTagsInAndStatus(String title, String author, List<String> tags, String status, Pageable pageable);
+
     GalleryDoc findByGalleryId(Integer galleryId);
 }
